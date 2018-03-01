@@ -5,6 +5,7 @@ describe Journey do
   let(:station) {double :station, zone: 1}
 
   penalty_fare = Journey::PENALTY_FARE
+  minimum_fare = Journey::MINIMUM_FARE
 
   it "is able to tell if a journey is complete or not" do
     expect(subject).not_to be_complete
@@ -26,7 +27,23 @@ describe Journey do
     end
 
      context 'given an exit station' do
-       let(:different_station) { double :different_station }
+       let(:different_station) { double :different_station, zone: 3 }
+
+       before do
+         subject.finish(different_station)
+       end
+
+       it 'calculates a fare' do
+         expect(subject.fare).to eq 3
+       end
+
+       it "knows if a journey is complete" do
+         expect(subject).to be_complete
+
+       end
+     end
+     context 'second fare test' do
+       let(:different_station) { double :different_station2, zone: 1 }
 
        before do
          subject.finish(different_station)
@@ -36,10 +53,6 @@ describe Journey do
          expect(subject.fare).to eq 1
        end
 
-       it "knows if a journey is complete" do
-         expect(subject).to be_complete
-
-       end
      end
    end
 end

@@ -10,7 +10,7 @@ class Journey
   end
 
   def complete?
-    !!@exit_station && !!@entry_station
+    !!exit_station && !!entry_station
   end
 
   def finish(station)
@@ -18,7 +18,11 @@ class Journey
   end
 
   def fare
-    complete? ? MINIMUM_FARE : PENALTY_FARE
+    complete? ? fare_calculator : PENALTY_FARE
+  end
+  private
+  def fare_calculator
+    MINIMUM_FARE + (entry_station.zone - exit_station.zone ).abs
   end
 
 end

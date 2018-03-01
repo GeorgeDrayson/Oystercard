@@ -4,8 +4,8 @@ describe Oystercard do
 
   subject(:oystercard) { described_class.new }
 
-  let(:fake_station) { double :station }
-  let(:fake_station2) { double :station2 }
+  let(:fake_station) { double :station, zone: 1 }
+  let(:fake_station2) { double :station2, zone: 1 }
 
   maximum_balance = Oystercard::MAXIMUM_BALANCE
   minimum_fare = Oystercard::MINIMUM_FARE
