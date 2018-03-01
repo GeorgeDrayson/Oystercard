@@ -1,15 +1,16 @@
 require './lib/journey.rb'
+require 'journey_log'
 class Oystercard
 
   MAXIMUM_BALANCE = 90
   MINIMUM_FARE = 1
 
-  attr_reader :balance, :entry_station, :journey_history, :journey
+  attr_reader :balance, :entry_station, :journey_log
 
-  def initialize(journey_class = Journey)
+  def initialize
     @balance = 0.0
     @entry_station = nil
-    @journey_history = []
+    @journey_log = JourneyLog.new
   end
 
   def top_up(amount)
@@ -19,24 +20,18 @@ class Oystercard
 
   def touch_in(station)
     raise Exception.new("Minimum balance for travel is £#{MINIMUM_FARE}") if @balance < MINIMUM_FARE
-    if journey != nil
-      deduct(journey.fare)
-      @journey_history.push(journey)
-    end
-      @journey = Journey.new(station)
-      @entry_station = station
+    deduct(journey_log.journey.fare) if journey_log.journey != nil
+    journey_log.start(station)
   end
 
   def touch_out(station)
-    @journey = Journey.new if journey == nil
-    journey.finish(station)
-    deduct(journey.fare)
-    @journey_history.push(journey)
-    @journey = @entry_station = nil
+    journey_log.finish(station)
+    deduct(journey_log.history[-1].fare)
+    journey_log.journey = nil
   end
 
   def in_journey?
-    !!entry_station
+    !!journey_log.journey
   end
 
   private

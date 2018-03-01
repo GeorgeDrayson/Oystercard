@@ -33,21 +33,7 @@ describe Oystercard do
       oystercard.top_up(10)
     end
 
-    describe '#touch_in' do
-      it 'changes status :in_transit' do
-        expect { oystercard.touch_in(fake_station) }.to change { oystercard.entry_station }.from(nil).to fake_station
-      end
-
-      it 'stores entry station data on card' do
-        expect { oystercard.touch_in(fake_station) }.to change { oystercard.entry_station }.from(nil).to fake_station
-      end
-    end
-
     describe '#touch_out' do
-      it 'changes status :not_in_transit' do
-        oystercard.touch_in(fake_station)
-        expect { oystercard.touch_out(fake_station) }.to change { oystercard.entry_station }.from(fake_station).to nil
-      end
       it 'deducts minimum fare' do
         oystercard.touch_in(fake_station)
         expect { oystercard.touch_out(fake_station) }.to change { oystercard.balance }.by -minimum_fare
@@ -67,18 +53,6 @@ describe Oystercard do
       end
     end
 
-    describe '#journey_history' do
-      it 'intializes with a blank journey history' do
-        expect(oystercard.journey_history).to be_empty
-      end
-      it 'returns the last journey made' do
-        oystercard.touch_in(fake_station)
-        oystercard.touch_out(fake_station2)
-        expect(oystercard.journey_history[0].entry_station).to eq fake_station
-        expect(oystercard.journey_history[0].exit_station).to eq fake_station2
-      end
-    end
-
     describe 'touch_out edge cases' do
       it 'charges penalty fare for no touch in' do
         expect { oystercard.touch_out(fake_station2)}.to change { oystercard.balance }.by -penalty_fare
@@ -91,24 +65,6 @@ describe Oystercard do
         expect { oystercard.touch_in(fake_station)}.to change { oystercard.balance }.by -penalty_fare
       end
     end
-
-    describe 'journey_history edge cases' do
-      it "should add an incomplete journey when you don't touch in" do
-        oystercard.touch_out(fake_station2)
-        expect( oystercard.journey_history[0].entry_station ).to eq nil
-        expect( oystercard.journey_history[0].exit_station ).to eq fake_station2
-      end
-      it "should add an incomplete journey when you don't touch out" do
-        oystercard.touch_in(fake_station)
-        oystercard.touch_in(fake_station)
-        oystercard.touch_out(fake_station2)
-        expect( oystercard.journey_history[0].entry_station ).to eq fake_station
-        expect( oystercard.journey_history[0].exit_station ).to eq nil
-        expect( oystercard.journey_history[1].entry_station ).to eq fake_station
-        expect( oystercard.journey_history[1].exit_station ).to eq fake_station2
-      end
-    end
-
   end
 
   describe '#minimum_fare' do
