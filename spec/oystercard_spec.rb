@@ -9,6 +9,7 @@ describe Oystercard do
 
   maximum_balance = Oystercard::MAXIMUM_BALANCE
   minimum_fare = Oystercard::MINIMUM_FARE
+  penalty_fare = Journey::PENALTY_FARE
 
   describe '#balance' do
     it 'initializes with a balance of zero' do
@@ -73,8 +74,38 @@ describe Oystercard do
       it 'returns the last journey made' do
         oystercard.touch_in(fake_station)
         oystercard.touch_out(fake_station2)
-        expect(oystercard.journey_history[0][:journey_start]).to eq fake_station
-        expect(oystercard.journey_history[0][:journey_stop]).to eq fake_station2
+        expect(oystercard.journey_history[0].entry_station).to eq fake_station
+        expect(oystercard.journey_history[0].exit_station).to eq fake_station2
+      end
+    end
+
+    describe 'touch_out edge cases' do
+      it 'charges penalty fare for no touch in' do
+        expect { oystercard.touch_out(fake_station2)}.to change { oystercard.balance }.by -penalty_fare
+      end
+    end
+
+    describe 'touch_in edge cases' do
+      it 'charges penalty fare for no touch out, double touch in' do
+        oystercard.touch_in(fake_station)
+        expect { oystercard.touch_in(fake_station)}.to change { oystercard.balance }.by -penalty_fare
+      end
+    end
+
+    describe 'journey_history edge cases' do
+      it "should add an incomplete journey when you don't touch in" do
+        oystercard.touch_out(fake_station2)
+        expect( oystercard.journey_history[0].entry_station ).to eq nil
+        expect( oystercard.journey_history[0].exit_station ).to eq fake_station2
+      end
+      it "should add an incomplete journey when you don't touch out" do
+        oystercard.touch_in(fake_station)
+        oystercard.touch_in(fake_station)
+        oystercard.touch_out(fake_station2)
+        expect( oystercard.journey_history[0].entry_station ).to eq fake_station
+        expect( oystercard.journey_history[0].exit_station ).to eq nil
+        expect( oystercard.journey_history[1].entry_station ).to eq fake_station
+        expect( oystercard.journey_history[1].exit_station ).to eq fake_station2
       end
     end
 
@@ -85,5 +116,6 @@ describe Oystercard do
       expect{ oystercard.touch_in(fake_station) }.to raise_error("Minimum balance for travel is £#{minimum_fare}")
     end
   end
+
 
 end
