@@ -30,9 +30,20 @@ rspec spec/station_spec.rb
 rspec spec/journey_log_spec.rb
 rspec spec/journey_spec.rb
 ```
+In the rspec you should get a value for the coverage. To get a more detailed analysis of the coverage, go into the coverage file:
+```
+cd coverage
+```
+Then type:
+```
+open index.html
+```
+
 ## Built with ##
 
-- [Atom](https://atom.io/) - text editor
+- [Atom](https://atom.io/) - Text editor
+- [Ruby](https://www.ruby-lang.org/en/) - Language
+- [Rspec](http://rspec.info/) - Testing suite
 
 ## Contributors ##
 
