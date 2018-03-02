@@ -1,5 +1,4 @@
 require 'journey_log'
-require 'oystercard'
 
 describe JourneyLog do
 
@@ -35,27 +34,25 @@ describe JourneyLog do
 
   describe 'journey_history edge cases' do
 
-    let(:oystercard) { Oystercard.new }
-    before(:each) { oystercard.top_up(50) }
-    subject(:journey_log) { oystercard.journey_log }
+    subject(:journey_log) { JourneyLog.new }
 
     it "should add an incomplete journey when you don't touch in" do
-      oystercard.touch_out(fake_station2)
+      subject.finish(fake_station2)
       expect( journey_log.history[0].entry_station ).to eq nil
       expect( journey_log.history[0].exit_station ).to eq fake_station2
     end
     it "should add an incomplete journey when you don't touch out" do
-      oystercard.touch_in(fake_station)
-      oystercard.touch_in(fake_station)
-      oystercard.touch_out(fake_station2)
+      subject.start(fake_station)
+      subject.start(fake_station)
+      subject.finish(fake_station2)
       expect( journey_log.history[0].entry_station ).to eq fake_station
       expect( journey_log.history[0].exit_station ).to eq nil
       expect( journey_log.history[1].entry_station ).to eq fake_station
       expect( journey_log.history[1].exit_station ).to eq fake_station2
     end
     it "should add an incomplete journey when you don't touch in" do
-      oystercard.touch_in(fake_station)
-      oystercard.touch_out(fake_station2)
+      subject.start(fake_station)
+      subject.finish(fake_station2)
       expect( journey_log.history[0].entry_station ).to eq fake_station
       expect( journey_log.history[0].exit_station ).to eq fake_station2
     end

@@ -1,4 +1,4 @@
-require './lib/station.rb'
+require 'station'
 
 describe Station do
 
