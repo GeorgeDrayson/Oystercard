@@ -1,11 +1,12 @@
 require 'journey.rb'
 require 'journey_log'
+
 class Oystercard
 
   MAXIMUM_BALANCE = 90
   MINIMUM_FARE = 1
 
-  attr_reader :balance, :entry_station, :journey_log
+  attr_reader :balance, :journey_log
 
   def initialize(journey_log = JourneyLog)
     @balance = 0.0

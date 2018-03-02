@@ -20,9 +20,11 @@ class Journey
   def fare
     complete? ? fare_calculator : PENALTY_FARE
   end
+
   private
+  
   def fare_calculator
-    MINIMUM_FARE + (entry_station.zone - exit_station.zone ).abs
+    MINIMUM_FARE + (entry_station.zone - exit_station.zone).abs
   end
 
 end
