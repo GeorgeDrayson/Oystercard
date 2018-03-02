@@ -21,7 +21,7 @@ class Oystercard
 
   def touch_in(station)
     raise Exception.new("Minimum balance for travel is £#{MINIMUM_FARE}") if @balance < MINIMUM_FARE
-    deduct(journey_log.journey.fare) if journey_log.journey != nil
+    deduct(journey_log.journey.fare) if in_journey?
     journey_log.start(station)
   end
 
