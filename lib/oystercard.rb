@@ -1,4 +1,4 @@
-require './lib/journey.rb'
+require 'journey.rb'
 require 'journey_log'
 class Oystercard
 
@@ -7,10 +7,10 @@ class Oystercard
 
   attr_reader :balance, :entry_station, :journey_log
 
-  def initialize
+  def initialize(journey_log = JourneyLog)
     @balance = 0.0
     @entry_station = nil
-    @journey_log = JourneyLog.new
+    @journey_log = journey_log.new
   end
 
   def top_up(amount)
